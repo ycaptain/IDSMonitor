@@ -1,64 +1,47 @@
-matrix:
-  include:
-    - os: osx
-      osx_image: xcode9.4
-      language: node_js
-      node_js: "12.14.0"
-      env:
-        - ELECTRON_CACHE=$HOME/.cache/electron
-        - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
 
-    # Windows currently doesn't support encrypted variables.
-    # Once supported uncomment this out & remove build with Docker
-    #
-    #- os: windows
-    #  language: node_js
-    #  node_js: "8"
+osx_image: xcode8.4
 
-    - os: linux
-      services: docker
-      language: generic
+dist: trusty
+
+language: node_js
+node_js: "12.14.1"
+
+env:
+  global:
+    - ELECTRON_CACHE=$HOME/.cache/electron
+    - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+
+os:
+  - osx
 
 cache:
   yarn: true
   directories:
-    - node_modules
-    - $HOME/.cache/electron
-    - $HOME/.cache/electron-builder
+  - node_modules
+  - $HOME/.cache/electron
+  - $HOME/.cache/electron-builder
+  - $HOME/.npm/_prebuilds
 
-install:
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      brew install yarn;
-    fi
+before_install:
+  - mkdir -p /tmp/git-lfs && curl -L https://github.com/github/git-lfs/releases/download/v2.2.0/git-lfs-$([ "$TRAVIS_OS_NAME" == "linux" ] && echo "linux" || echo "darwin")-amd64-2.2.0.tar.gz | tar -xz -C /tmp/git-lfs --strip-components 1 && /tmp/git-lfs/git-lfs pull
+
 script:
   - |
-    if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-      docker run --rm \
-        -e GH_TOKEN=$GH_TOKEN \
-        -v $PWD:/project \
-        -v ~/.cache/electron:/root/.cache/electron \
-        -v ~/.cache/electron-builder:/root/.cache/electron-builder \
-        electronuserland/builder:wine \
-        /bin/bash -c "yarn install --link-duplicates --pure-lockfile && yarn package-linux"
-    elif [ "$TRAVIS_OS_NAME" == "windows" ]; then
-      npm install;
-      npm run package-win;
-    else
-      security create-keychain -p $KEYCHAIN_PASSWORD build.keychain;
-      security default-keychain -s build.keychain;
-      security unlock-keychain -p $KEYCHAIN_PASSWORD build.keychain;
-      echo $KEYSTORE | base64 --decode - > keystore.p12;
-      security import keystore.p12 -k build.keychain -P $KEYCHAIN_PASSWORD -T /usr/bin/codesign;
+    if [ "$TRAVIS_OS_NAME" == "osx" ]; then
       yarn install;
       yarn package;
+    else
+      npm install;
+      npm run package-win;
     fi
+
 before_cache:
   - rm -rf $HOME/.cache/electron-builder/wine
 
 branches:
   except:
     - "/^v\\d+\\.\\d+\\.\\d+$/"
+
 notifications:
   webhooks:
     urls:
@@ -66,5 +49,5 @@ notifications:
     on_success: always # default: always
     on_failure: always # default: always
     on_start: never # default: never
-    on_cancel: always # default: always
+    on_cancel: never # default: always
     on_error: always # default: always
