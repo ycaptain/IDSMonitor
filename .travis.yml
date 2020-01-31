@@ -1,0 +1,70 @@
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode9.4
+      language: node_js
+      node_js: "12.14.0"
+      env:
+        - ELECTRON_CACHE=$HOME/.cache/electron
+        - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+
+    # Windows currently doesn't support encrypted variables.
+    # Once supported uncomment this out & remove build with Docker
+    #
+    #- os: windows
+    #  language: node_js
+    #  node_js: "8"
+
+    - os: linux
+      services: docker
+      language: generic
+
+cache:
+  yarn: true
+  directories:
+    - node_modules
+    - $HOME/.cache/electron
+    - $HOME/.cache/electron-builder
+
+install:
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      brew install yarn;
+    fi
+script:
+  - |
+    if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+      docker run --rm \
+        -e GH_TOKEN=$GH_TOKEN \
+        -v $PWD:/project \
+        -v ~/.cache/electron:/root/.cache/electron \
+        -v ~/.cache/electron-builder:/root/.cache/electron-builder \
+        electronuserland/builder:wine \
+        /bin/bash -c "yarn install --link-duplicates --pure-lockfile && yarn package-linux"
+    elif [ "$TRAVIS_OS_NAME" == "windows" ]; then
+      npm install;
+      npm run package-win;
+    else
+      security create-keychain -p $KEYCHAIN_PASSWORD build.keychain;
+      security default-keychain -s build.keychain;
+      security unlock-keychain -p $KEYCHAIN_PASSWORD build.keychain;
+      echo $KEYSTORE | base64 --decode - > keystore.p12;
+      security import keystore.p12 -k build.keychain -P $KEYCHAIN_PASSWORD -T /usr/bin/codesign;
+      yarn install;
+      yarn package;
+    fi
+before_cache:
+  - rm -rf $HOME/.cache/electron-builder/wine
+
+branches:
+  except:
+    - "/^v\\d+\\.\\d+\\.\\d+$/"
+notifications:
+  webhooks:
+    urls:
+      - https://open.feishu.cn/officialapp/notify/dd6698e1132974790e9996e8181d32496d4ffc1e9fc64395763fd87a7abdf872
+    on_success: always # default: always
+    on_failure: always # default: always
+    on_start: never # default: never
+    on_cancel: always # default: always
+    on_error: always # default: always
