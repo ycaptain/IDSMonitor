@@ -4,6 +4,8 @@ import { History } from 'history';
 
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
+import { ConfigProvider } from 'antd';
+import zhCN from 'antd/es/locale/zh_CN';
 import Routes from '../routes';
 
 interface IRootType {
@@ -14,9 +16,11 @@ interface IRootType {
 export default function Root({ store, history }: IRootType) {
   return (
     <Provider store={store}>
-      <ConnectedRouter history={history}>
-        <Routes />
-      </ConnectedRouter>
+      <ConfigProvider locale={zhCN}>
+        <ConnectedRouter history={history}>
+          <Routes />
+        </ConnectedRouter>
+      </ConfigProvider>
     </Provider>
   );
 }
