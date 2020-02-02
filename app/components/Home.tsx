@@ -1,6 +1,4 @@
 import React from 'react';
-import path from 'path';
-import { remote } from 'electron';
 import { Button } from 'antd';
 
 let styles = require('./Home.less');
