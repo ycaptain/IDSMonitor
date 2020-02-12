@@ -1,3 +1,3 @@
-[submodule "py/IDS-LSTM"]
-	path = py/IDS-LSTM
-	url = https://github.com/ShiXiaozhou/IDS-LSTM.git
+[submodule "ids"]
+	path = ids
+	url = https://github.com/ShiXiaozhou/ids.git
