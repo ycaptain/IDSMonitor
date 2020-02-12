@@ -1,3 +1,0 @@
-[submodule "py/IDS-LSTM"]
-	path = py/IDS-LSTM
-	url = https://github.com/ShiXiaozhou/IDS-LSTM.git
