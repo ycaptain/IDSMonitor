@@ -2,6 +2,7 @@ import React from 'react';
 import path from 'path';
 import { remote } from 'electron';
 import { Button } from 'antd';
+import { Link } from 'react-router-dom';
 
 let styles = require('./Home.less');
 
@@ -31,7 +32,9 @@ const Home = (): JSX.Element => {
     <div>
       <div className={styles.container} data-tid="container">
         <h2>Home</h2>
-        <Button type="primary">button</Button>
+        <Link to="/pred">
+          To Pred
+        </Link>
       </div>
     </div>
   )
