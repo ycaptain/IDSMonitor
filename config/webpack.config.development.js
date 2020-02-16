@@ -7,6 +7,7 @@
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const baseConfig = require('./webpack.config.base');
+const aliyunTheme = require('@ant-design/aliyun-theme');
 
 const port = process.env.PORT || 3000;
 
@@ -116,9 +117,10 @@ module.exports = merge(baseConfig, {
           {
             loader: 'less-loader',
             options: {
-              modifyVars: {
-                'primary-color': '#1DA57A',
-              },
+              // modifyVars: {
+              //   'primary-color': '#1DA57A',
+              // },
+              modifyVars: aliyunTheme,
               javascriptEnabled: true,
             }
           }

@@ -167,6 +167,7 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
+    "@ant-design/aliyun-theme": "^0.0.4",
     "antd": "^3.26.7",
     "electron-debug": "^1.1.0",
     "font-awesome": "^4.7.0",

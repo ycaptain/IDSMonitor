@@ -12,6 +12,11 @@
   resolved "https://registry.npm.taobao.org/7zip/download/7zip-0.0.6.tgz#9cafb171af82329490353b4816f03347aa150a30"
   integrity sha1-nK+xca+CMpSQNTtIFvAzR6oVCjA=
 
+"@ant-design/aliyun-theme@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.npm.taobao.org/@ant-design/aliyun-theme/download/@ant-design/aliyun-theme-0.0.4.tgz#d2b6973f300bd3dd10a16b47c89f48d99423eb76"
+  integrity sha1-0raXPzAL090QoWtHyJ9I2ZQj63Y=
+
 "@ant-design/colors@^3.1.0":
   version "3.2.2"
   resolved "https://registry.npm.taobao.org/@ant-design/colors/download/@ant-design/colors-3.2.2.tgz?cache=0&sync_timestamp=1577271695621&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40ant-design%2Fcolors%2Fdownload%2F%40ant-design%2Fcolors-3.2.2.tgz#5ad43d619e911f3488ebac303d606e66a8423903"

@@ -8,6 +8,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const baseConfig = require('./webpack.config.base');
+const aliyunTheme = require('@ant-design/aliyun-theme');
 
 module.exports = merge(baseConfig, {
   mode: 'production',
@@ -50,7 +51,7 @@ module.exports = merge(baseConfig, {
           use: [{
             loader: 'css-loader',
             options: {
-              //modules: true,
+              modules: true,
               importLoaders: 1,
               localIdentName: '[local]',
             }
@@ -58,9 +59,10 @@ module.exports = merge(baseConfig, {
           {
             loader: 'less-loader',
             options: {
-              modifyVars: {
-                'primary-color': '#1DA57A',
-              },
+              // modifyVars: {
+              //   'primary-color': '#1DA57A',
+              // },
+              modifyVars: aliyunTheme,
               javascriptEnabled: true,
             }
           }]
