@@ -45,7 +45,7 @@
       "main.js.map",
       "package.json"
     ],
-    "extraResources": "py",
+    "extraResources": "ids",
     "directories": {
       "buildResources": "resources",
       "output": "release"
