@@ -26,32 +26,76 @@ module.exports = merge(baseConfig, {
 
   module: {
     rules: [
-      // Extract all .global.css to style.css as is
+
       {
-        test: /\.less$/,
-        use: ExtractTextPlugin.extract({
-          use: [{
+        test: /\.global\.css$/,
+        loaders: [
+          'style-loader',
+          'css-loader?sourceMap'
+        ]
+      },
+
+      {
+        test: /^((?!\.global).)*\.css$/,
+        loaders: [
+          'style-loader',
+          'css-loader?modules&sourceMap&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]'
+        ]
+      },
+
+      // Add SASS support  - compile all .global.scss files and pipe it to style.css
+      {
+        test: /\.global\.less$/,
+        use: [
+          {
+            loader: 'style-loader'
+          },
+          {
             loader: 'css-loader',
             options: {
-              //modules: true,
+              sourceMap: true,
+            },
+          },
+          {
+            loader: 'less-loader'
+          }
+        ]
+      },
+
+      // Add SASS support  - compile all other .scss files and pipe it to style.css
+      {
+        test: /^((?!\.global).)*\.less$/,
+        use: [
+          {
+            loader: 'style-loader'
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              sourceMap: true,
               importLoaders: 1,
               localIdentName: '[name]__[local]__[hash:base64:5]',
             }
           },
           {
             loader: 'less-loader'
-          }]
-        }),
+          }
+        ],
         exclude: /node_modules\/antd/
       },
 
       {
-        test: /\.less$/,
-        use: ExtractTextPlugin.extract({
-          use: [{
+        test: /^((?!\.global).)*\.less$/,
+        use: [
+          {
+            loader: 'style-loader'
+          },
+          {
             loader: 'css-loader',
             options: {
               modules: true,
+              sourceMap: true,
               importLoaders: 1,
               localIdentName: '[local]',
             }
@@ -65,8 +109,8 @@ module.exports = merge(baseConfig, {
               modifyVars: aliyunTheme,
               javascriptEnabled: true,
             }
-          }]
-        }),
+          }
+        ],
         include: /node_modules\/antd/
       },
 
