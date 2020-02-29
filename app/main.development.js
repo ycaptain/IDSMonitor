@@ -56,7 +56,7 @@ app.on('ready', () =>
       }
     });
 
-    mainWindow.loadURL(`file://${__dirname}/build/app.html`);
+    mainWindow.loadURL(`file://${__dirname}/app.html`);
 
     ipcMain.on('predict', async (event, arg) => {
       const a = await predict();

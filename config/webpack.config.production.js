@@ -180,7 +180,7 @@ module.exports = merge(baseConfig, {
 
     new HtmlWebpackPlugin({
       filename: '../app.html',
-      template: 'app/build/app.html',
+      template: 'app/app.html',
       inject: false
     })
   ],
