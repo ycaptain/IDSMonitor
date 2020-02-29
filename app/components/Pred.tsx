@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Statistic, Card, Row, Col, Icon } from 'antd';
-let styles = require('./Pred.less');
 
 const Pred = (): JSX.Element => {
 
