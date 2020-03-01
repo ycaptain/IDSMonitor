@@ -24,7 +24,8 @@
     "emitDecoratorMetadata": true,
     "sourceMap": true,
     "outDir": "dist",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "allowJs": true
   },
   "files": [
     "app/index.tsx"

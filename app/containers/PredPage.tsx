@@ -19,7 +19,7 @@ const PredPage = (): JSX.Element => {
         <Link to="/">To Home</Link>
       </Sider>
       <Layout>
-        <Header className="mode-header">
+        <Header className={styles.mode_header}>
           <Radio.Group value={mode} onChange={e => setMode(e.target.value)}>
             <Radio.Button value={constants.MODE_PRED}>
               {constants.MODE_PRED}
