@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
 import {ipcRenderer} from 'electron';
@@ -6,9 +6,12 @@ let styles = require('./Home.less');
 
 const Home = (): JSX.Element => {
 
+
+
   ipcRenderer.on('predict-r', (event, arg) => {
     console.info(arg);
   })
+  console.info('render');
 
   return (
     <div>
@@ -18,8 +21,7 @@ const Home = (): JSX.Element => {
           To Pred
         </Link>
         <Button onClick={() => {
-          console.info('send');
-          ipcRenderer.send('predict');
+            ipcRenderer.send('predict');
         }}>Test</Button>
       </div>
     </div>

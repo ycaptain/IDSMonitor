@@ -1,99 +1,57 @@
-/* eslint-disable max-len */
 /**
- * Build config for development process that uses Hot-Module-Replacement
- * https://webpack.github.io/docs/hot-module-replacement-with-webpack.html
+ * Build config for electron 'Renderer Process' file
  */
 
+const path = require('path');
 const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const merge = require('webpack-merge');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const baseConfig = require('./webpack.config.base');
 const aliyunTheme = require('@ant-design/aliyun-theme');
 
-const port = process.env.PORT || 3000;
-
 module.exports = merge(baseConfig, {
-  mode: 'development',
+  mode: 'production',
 
-  devtool: 'inline-source-map',
+  devtool: 'cheap-module-source-map',
 
   entry: [
-    'react-hot-loader/patch',
-    `webpack-hot-middleware/client?path=http://localhost:${port}/__webpack_hmr&reload=true`,
     './app/index'
   ],
 
   output: {
-    publicPath: `http://localhost:${port}/dist/`
-  },
-
-  resolve: {
-    alias: {
-      'react-dom': '@hot-loader/react-dom',
-    }
+    path: path.join(__dirname, '../app/dist'),
+    publicPath: '../dist/'
   },
 
   module: {
-    // preLoaders: [
-    //   {
-    //     test: /\.js$/,
-    //     loader: 'eslint-loader',
-    //     exclude: /node_modules/
-    //   }
-    // ],
     rules: [
-
-      // Add LESS support  - compile all .global.less files and pipe it to style.css
+      // Extract all .global.css to style.css as is
       {
-        test: /\.global\.less$/,
-        use: [
-          {
-            loader: 'style-loader'
-          },
-          {
+        test: /\.less$/,
+        use: ExtractTextPlugin.extract({
+          use: [{
             loader: 'css-loader',
             options: {
-              sourceMap: true,
-            },
-          },
-          {
-            loader: 'less-loader'
-          }
-        ]
-      },
-      // Add LESS support  - compile all other .less files and pipe it to style.css
-      {
-        test: /^((?!\.global).)*\.less$/,
-        use: [
-          {
-            loader: 'style-loader'
-          },
-          {
-            loader: 'css-loader',
-            options: {
-              modules: true,
-              sourceMap: true,
+              //modules: true,
               importLoaders: 1,
               localIdentName: '[name]__[local]__[hash:base64:5]',
             }
           },
           {
             loader: 'less-loader'
-          }
-        ],
+          }]
+        }),
         exclude: /node_modules\/antd/
       },
 
       {
-        test: /^((?!\.global).)*\.less$/,
-        use: [
-          {
-            loader: 'style-loader'
-          },
-          {
+        test: /\.less$/,
+        use: ExtractTextPlugin.extract({
+          use: [{
             loader: 'css-loader',
             options: {
               modules: true,
-              sourceMap: true,
               importLoaders: 1,
               localIdentName: '[local]',
             }
@@ -107,8 +65,8 @@ module.exports = merge(baseConfig, {
               modifyVars: aliyunTheme,
               javascriptEnabled: true,
             }
-          }
-        ],
+          }]
+        }),
         include: /node_modules\/antd/
       },
 
@@ -170,19 +128,17 @@ module.exports = merge(baseConfig, {
   },
 
   plugins: [
-    // https://webpack.github.io/docs/hot-module-replacement-with-webpack.html
-    new webpack.HotModuleReplacementPlugin(),
+    // https://webpack.github.io/docs/list-of-plugins.html#occurrenceorderplugin
+    // https://github.com/webpack/webpack/issues/864
+    new webpack.optimize.OccurrenceOrderPlugin(),
 
-    new webpack.NoEmitOnErrorsPlugin(),
+    new ExtractTextPlugin('style.css'),
 
-    // NODE_ENV should be production so that modules do not perform certain development checks
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('development')
-    }),
-
-    new webpack.LoaderOptionsPlugin({
-      debug: true
-    }),
+    new HtmlWebpackPlugin({
+      filename: '../public/app.html',
+      template: 'app/public/app.html',
+      inject: false
+    })
   ],
 
   // https://github.com/chentsulin/webpack-target-electron-renderer#how-this-module-works

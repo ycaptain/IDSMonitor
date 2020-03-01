@@ -7,7 +7,7 @@ const {
 } = require('electron');
 const {
   predict
-} = require('./api/client');
+} = require('../api/client');
 
 let menu;
 let template;
@@ -56,12 +56,13 @@ app.on('ready', () =>
       }
     });
 
-    mainWindow.loadURL(`file://${__dirname}/app.html`);
+    mainWindow.loadURL(`file://${__dirname}/../public/app.html`);
 
     ipcMain.on('predict', async (event, arg) => {
       const a = await predict();
-      console.info(`main predict ${a}`);
-      event.reply('predict-r', a);
+      const timestamp = Date.now();
+      console.info(`${timestamp}: main predict ${a}`);
+      event.reply('predict-r', {a, timestamp});
     });
 
     mainWindow.webContents.on('did-finish-load', () => {

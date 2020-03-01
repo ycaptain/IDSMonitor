@@ -1,3 +1,11 @@
+const {
+  app,
+  BrowserWindow,
+  Menu,
+  shell,
+  ipcMain
+} = require('electron');
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     show: false,

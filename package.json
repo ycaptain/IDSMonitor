@@ -4,18 +4,18 @@
   "main": "main.js",
   "scripts": {
     "cz": "git-cz",
+    "start": "cross-env NODE_ENV=production electron ./app/dist/main.js",
+    "build": "rm -rf ./app/dist && npm run build-main && npm run build-renderer",
     "build-main": "cross-env NODE_ENV=production node ./node_modules/webpack/bin/webpack --config ./config/webpack.config.electron.js --progress --profile --colors",
     "build-renderer": "cross-env NODE_ENV=production node ./node_modules/webpack/bin/webpack --config ./config/webpack.config.production.js --progress --profile --colors",
-    "build": "npm run build-main && npm run build-renderer",
-    "hot-server": "cross-env NODE_ENV=development node --max_old_space_size=2096 ./config/server.js",
-    "start": "cross-env NODE_ENV=production electron ./app/",
-    "start-hot": "cross-env HOT=1 NODE_ENV=development electron ./app/main.development",
     "dev": "npm run hot-server -- --start-hot",
+    "hot-server": "cross-env NODE_ENV=development node --max_old_space_size=2096 ./config/server.js",
+    "start-hot": "cross-env HOT=1 NODE_ENV=development electron ./app/electron/main.development",
     "precommit": "lint-staged",
-    "package": "npm run build && CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --publish never",
-    "package-win": "npm run build && CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --win --x64",
-    "package-linux": "npm run build && CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --linux",
-    "package-all": "npm run build && CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder -mwl",
+    "package": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --publish never",
+    "package-win": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --win --x64",
+    "package-linux": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --linux",
+    "package-all": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder -mwl",
     "reset": "rm -rf node_modules"
   },
   "build": {
@@ -38,11 +38,7 @@
     },
     "files": [
       "dist/",
-      "node_modules/",
-      "app.html",
-      "main.js",
-      "main.js.map",
-      "package.json"
+      "public/"
     ],
     "extraResources": "ids",
     "directories": {
@@ -50,7 +46,7 @@
       "output": "release"
     },
     "mac": {
-      "target": "pkg"
+      "target": "dmg"
     },
     "win": {
       "target": "nsis"
@@ -109,8 +105,8 @@
     "@hot-loader/react-dom": "^16.11.0",
     "@types/history": "^4.5.2",
     "@types/jest": "^22.0.0",
-    "@types/react": "^16.0.5",
-    "@types/react-dom": "16.9.5",
+    "@types/react": "^16.9.0",
+    "@types/react-dom": "16.9.0",
     "@types/react-hot-loader": "^3.0.4",
     "@types/react-redux": "^5.0.4",
     "@types/react-router": "^4.0.11",
@@ -166,8 +162,8 @@
     "electron-debug": "^1.1.0",
     "font-awesome": "^4.7.0",
     "history": "^4.6.1",
-    "react": "^16.13.0",
-    "react-dom": "^16.13.0",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
     "react-redux": "^5.0.1",
     "react-router": "^4.1.1",
     "react-router-dom": "^4.1.1",
