@@ -159,7 +159,8 @@
   },
   "dependencies": {
     "@ant-design/aliyun-theme": "^0.0.4",
-    "antd": "^3.26.7",
+    "@antv/g2plot": "^0.11.34",
+    "antd": "^4.0.0",
     "electron-debug": "^1.1.0",
     "font-awesome": "^4.7.0",
     "history": "^4.6.1",
