@@ -8,6 +8,7 @@ const {
 const {
   predict
 } = require('../api/client');
+const path = require('path');
 
 let menu;
 let template;
@@ -52,17 +53,24 @@ app.on('ready', () =>
       width: 1024,
       height: 728,
       webPreferences: {
-        nodeIntegration: true
+        nodeIntegration: true,
+        preload: path.resolve(__dirname, 'preload.js'),
       }
     });
 
     mainWindow.loadURL(`file://${__dirname}/../public/app.html`);
 
-    ipcMain.on('predict', async (event, arg) => {
-      const a = await predict();
-      const timestamp = Date.now();
-      console.info(`${timestamp}: main predict ${a}`);
-      event.reply('predict-r', {a, timestamp});
+    ipcMain.on('predict', (event, arg) => {
+      (async () => {
+        try {
+          const a = await predict();
+          console.info('Main process: predict');
+          console.info(a);
+          event.reply('predict-r', a);
+        } catch (e) {
+          console.error(e);
+        }
+      })();
     });
 
     mainWindow.webContents.on('did-finish-load', () => {

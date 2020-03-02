@@ -16,6 +16,7 @@
     "package-win": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --win --x64",
     "package-linux": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --linux",
     "package-all": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder -mwl",
+    "gen:thrift": "rm -rf app/api/gen-thrift && mkdir app/api/gen-thrift && thrift -r -out app/api/gen-thrift -gen js:node ids/predict.thrift",
     "reset": "rm -rf node_modules"
   },
   "build": {

@@ -25,7 +25,7 @@
     "sourceMap": true,
     "outDir": "dist",
     "esModuleInterop": true,
-    "allowJs": true
+    "allowJs": true,
   },
   "files": [
     "app/index.tsx"
