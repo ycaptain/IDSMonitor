@@ -157,6 +157,9 @@ class Pred extends Component<any, State> {
   render() {
     const { monitorState, time, isLoading, results } = this.state;
 
+    const faultNum = results.filter(r => r.loss >= 0.4).length;
+    const faultProb = Math.round(faultNum / results.length * 100) / 100;
+
     return (
       <div style={{ padding: "8px 0px" }}>
         <Row gutter={[16, 16]}>
@@ -166,7 +169,7 @@ class Pred extends Component<any, State> {
             </Card>
           </Col>
           <Col span={6}>
-            <Labels />
+            <Labels faultNum={faultNum} faultProb={faultProb} />
             <Card hoverable className={styles.data_card}>
               <Timer
                 monitorState={monitorState}

@@ -24,14 +24,14 @@ const Timer = (props: ICounter) => {
   useEffect(() => {
     if (monitorState === MonitorState.RUNNING) {
       const timeout = setTimeout(() => {
-        setTime(time + 0.01);
+        setTime(time + 1);
         (async () => {
           const idx = Math.floor(time);
           if (time - idx < 0.01) {
             sendData(idx);
           }
         })();
-      }, 10);
+      }, 1000);
       return () => {
         clearTimeout(timeout);
       };
@@ -79,7 +79,7 @@ const Timer = (props: ICounter) => {
     <div style={{ display: "flex" }}>
       <Statistic
         title={monitorState}
-        value={time && `${time.toFixed(2)} 秒`}
+        value={time && `${time} 秒`}
         style={{ minWidth: "150px" }}
       />
       <Button
