@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { Chart, Geom, Axis, Tooltip, Legend } from "bizcharts";
+import { Chart, Geom, Axis, Tooltip, Legend, Guide } from "bizcharts";
 
 // 定义度量
 const cols = {
@@ -39,8 +39,10 @@ const label: any = {
       hours + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
 
     return formattedTime;
-  },
+  }
 };
+
+const { Line } = Guide;
 class Figures extends PureComponent<any, any> {
   render() {
     console.info("Figures");
@@ -58,8 +60,15 @@ class Figures extends PureComponent<any, any> {
         <Axis name="loss" title />
         <Legend position="top" />
         <Tooltip />
-        <Geom type="line" position="timestamp*loss" shape="smooth"
-        color={`l (270) 0:rgba(47,194,91,1) 0.5:rgba(206,241,141,1) 1:rgba(255,0,0,1)`} />
+        <Guide>
+          <Line start={["min", 0.6]} end={["max", 0.6]} />
+        </Guide>
+        <Geom
+          type="line"
+          position="timestamp*loss"
+          shape="smooth"
+          color={`l (270) 0:rgba(47,194,91,1) 0.5:rgba(206,241,141,1) 1:rgba(255,0,0,1)`}
+        />
       </Chart>
     );
   }
