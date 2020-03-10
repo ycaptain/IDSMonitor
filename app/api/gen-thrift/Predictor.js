@@ -196,9 +196,13 @@ Predictor_pong_result.prototype.write = function(output) {
 
 var Predictor_predict_args = function(args) {
   this.data = null;
+  this.timestamp = null;
   if (args) {
     if (args.data !== undefined && args.data !== null) {
       this.data = Thrift.copyList(args.data, [null]);
+    }
+    if (args.timestamp !== undefined && args.timestamp !== null) {
+      this.timestamp = args.timestamp;
     }
   }
 };
@@ -228,9 +232,13 @@ Predictor_predict_args.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.timestamp = input.readString();
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -254,6 +262,11 @@ Predictor_predict_args.prototype.write = function(output) {
     output.writeListEnd();
     output.writeFieldEnd();
   }
+  if (this.timestamp !== null && this.timestamp !== undefined) {
+    output.writeFieldBegin('timestamp', Thrift.Type.STRING, 2);
+    output.writeString(this.timestamp);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -263,7 +276,7 @@ var Predictor_predict_result = function(args) {
   this.success = null;
   if (args) {
     if (args.success !== undefined && args.success !== null) {
-      this.success = Thrift.copyList(args.success, [null]);
+      this.success = new ttypes.pred(args.success);
     }
   }
 };
@@ -279,16 +292,9 @@ Predictor_predict_result.prototype.read = function(input) {
     }
     switch (fid) {
       case 0:
-      if (ftype == Thrift.Type.LIST) {
-        this.success = [];
-        var _rtmp316 = input.readListBegin();
-        var _size15 = _rtmp316.size || 0;
-        for (var _i17 = 0; _i17 < _size15; ++_i17) {
-          var elem18 = null;
-          elem18 = input.readDouble();
-          this.success.push(elem18);
-        }
-        input.readListEnd();
+      if (ftype == Thrift.Type.STRUCT) {
+        this.success = new ttypes.pred();
+        this.success.read(input);
       } else {
         input.skip(ftype);
       }
@@ -308,15 +314,8 @@ Predictor_predict_result.prototype.read = function(input) {
 Predictor_predict_result.prototype.write = function(output) {
   output.writeStructBegin('Predictor_predict_result');
   if (this.success !== null && this.success !== undefined) {
-    output.writeFieldBegin('success', Thrift.Type.LIST, 0);
-    output.writeListBegin(Thrift.Type.DOUBLE, this.success.length);
-    for (var iter19 in this.success) {
-      if (this.success.hasOwnProperty(iter19)) {
-        iter19 = this.success[iter19];
-        output.writeDouble(iter19);
-      }
-    }
-    output.writeListEnd();
+    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
+    this.success.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -446,7 +445,7 @@ PredictorClient.prototype.recv_pong = function(input,mtype,rseqid) {
   return callback('pong failed: unknown result');
 };
 
-PredictorClient.prototype.predict = function(data, callback) {
+PredictorClient.prototype.predict = function(data, timestamp, callback) {
   this._seqid = this.new_seqid();
   if (callback === undefined) {
     var _defer = Q.defer();
@@ -457,18 +456,19 @@ PredictorClient.prototype.predict = function(data, callback) {
         _defer.resolve(result);
       }
     };
-    this.send_predict(data);
+    this.send_predict(data, timestamp);
     return _defer.promise;
   } else {
     this._reqs[this.seqid()] = callback;
-    this.send_predict(data);
+    this.send_predict(data, timestamp);
   }
 };
 
-PredictorClient.prototype.send_predict = function(data) {
+PredictorClient.prototype.send_predict = function(data, timestamp) {
   var output = new this.pClass(this.output);
   var params = {
-    data: data
+    data: data,
+    timestamp: timestamp
   };
   var args = new Predictor_predict_args(params);
   try {
@@ -598,9 +598,10 @@ PredictorProcessor.prototype.process_predict = function(seqid, input, output) {
   var args = new Predictor_predict_args();
   args.read(input);
   input.readMessageEnd();
-  if (this._handler.predict.length === 1) {
+  if (this._handler.predict.length === 2) {
     Q.fcall(this._handler.predict.bind(this._handler),
-      args.data
+      args.data,
+      args.timestamp
     ).then(function(result) {
       var result_obj = new Predictor_predict_result({success: result});
       output.writeMessageBegin("predict", Thrift.MessageType.REPLY, seqid);
@@ -616,7 +617,7 @@ PredictorProcessor.prototype.process_predict = function(seqid, input, output) {
       output.flush();
     });
   } else {
-    this._handler.predict(args.data, function (err, result) {
+    this._handler.predict(args.data, args.timestamp, function (err, result) {
       var result_obj;
       if ((err === null || typeof err === 'undefined')) {
         result_obj = new Predictor_predict_result((err !== null || typeof err === 'undefined') ? err : {success: result});

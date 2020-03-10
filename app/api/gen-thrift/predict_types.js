@@ -12,3 +12,82 @@ var Int64 = require('node-int64');
 
 
 var ttypes = module.exports = {};
+var pred = module.exports.pred = function(args) {
+  this.type = null;
+  this.loss = null;
+  this.timestamp = null;
+  if (args) {
+    if (args.type !== undefined && args.type !== null) {
+      this.type = args.type;
+    }
+    if (args.loss !== undefined && args.loss !== null) {
+      this.loss = args.loss;
+    }
+    if (args.timestamp !== undefined && args.timestamp !== null) {
+      this.timestamp = args.timestamp;
+    }
+  }
+};
+pred.prototype = {};
+pred.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true) {
+    var ret = input.readFieldBegin();
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid) {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.type = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.DOUBLE) {
+        this.loss = input.readDouble();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRING) {
+        this.timestamp = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+pred.prototype.write = function(output) {
+  output.writeStructBegin('pred');
+  if (this.type !== null && this.type !== undefined) {
+    output.writeFieldBegin('type', Thrift.Type.I32, 1);
+    output.writeI32(this.type);
+    output.writeFieldEnd();
+  }
+  if (this.loss !== null && this.loss !== undefined) {
+    output.writeFieldBegin('loss', Thrift.Type.DOUBLE, 2);
+    output.writeDouble(this.loss);
+    output.writeFieldEnd();
+  }
+  if (this.timestamp !== null && this.timestamp !== undefined) {
+    output.writeFieldBegin('timestamp', Thrift.Type.STRING, 3);
+    output.writeString(this.timestamp);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+

@@ -1,3 +1,17 @@
-.test {
-  position: relative;
+body, div, p {
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: default;
+}
+input, button, textarea, :focus {
+    outline: none; // You should add some other style for :focus to help UX/a11y
+}
+
+#root {
+  background: #f0f2f5;
+  height: 100%;
+}
+
+.c_pointer {
+  cursor: pointer;
 }
