@@ -1,6 +1,6 @@
 import React from "react";
 import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
-import { Statistic, Card} from "antd";
+import { Statistic, Card } from "antd";
 let styles = require("./Pred.less");
 
 const Labels = React.memo(() => {
@@ -8,7 +8,10 @@ const Labels = React.memo(() => {
 
   return (
     <>
-      <Card hoverable className={styles.data_card}>
+      <Card
+        hoverable
+        className={styles.data_card}
+      >
         <Statistic
           title="异常率"
           value={0.05}
@@ -18,7 +21,10 @@ const Labels = React.memo(() => {
           suffix="%"
         />
       </Card>
-      <Card hoverable className={styles.data_card}>
+      <Card
+        hoverable
+        className={styles.data_card}
+      >
         <Statistic
           title="隐患问题个数"
           value={56}
