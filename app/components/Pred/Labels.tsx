@@ -3,8 +3,17 @@ import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
 import { Statistic, Card } from "antd";
 let styles = require("./Pred.less");
 
-const Labels = React.memo(() => {
+type Props = {
+  faultNum: number;
+  faultProb: number;
+}
+
+const Labels = React.memo((props: Props) => {
   console.info("labels");
+  const {
+    faultNum,
+    faultProb
+  } = props;
 
   return (
     <>
@@ -14,7 +23,7 @@ const Labels = React.memo(() => {
       >
         <Statistic
           title="异常率"
-          value={0.05}
+          value={faultProb.toFixed(2)}
           precision={2}
           valueStyle={{ color: "#3f8600" }}
           prefix={<ArrowDownOutlined />}
@@ -27,7 +36,7 @@ const Labels = React.memo(() => {
       >
         <Statistic
           title="隐患问题个数"
-          value={56}
+          value={faultNum}
           valueStyle={{ color: "#cf1322" }}
           prefix={<ArrowUpOutlined />}
         />

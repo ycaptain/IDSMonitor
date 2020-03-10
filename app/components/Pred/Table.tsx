@@ -18,12 +18,12 @@ const Threat: any = {
     range: [0.4, 0.6],
     color: "green"
   },
-  HIGH: {
+  ABNORMAL: {
     text: "异常",
     range: [0.6, 1.2],
-    color: "volcano"
+    color: "gold"
   },
-  ABNORMAL: {
+  HIGH: {
     text: "高危",
     range: [1.2, 100],
     color: "red"
@@ -91,10 +91,10 @@ const columns = [
         tag = Threat.SAFE;
       } else if (abLoss < Threat.LOW.range[1]) {
         tag = Threat.LOW;
-      } else if (abLoss < Threat.SAFE.range[1]) {
-        tag = Threat.HIGH;
+      } else if (abLoss < Threat.ABNORMAL.range[1]) {
+        tag = Threat.ABNORMAL
       } else {
-        tag = Threat.ABNORMAL;
+        tag = Threat.HIGH;
       }
 
       return <Tag color={tag.color}>{tag.text.toUpperCase()}</Tag>;
