@@ -149,7 +149,8 @@ class Pred extends Component<any, State> {
     const data = Object.keys(this.data[dataIdx])
       .slice(1)
       .map(k => this.data[dataIdx][k]);
-    this.transmit(data, dataIdx.toString());
+    const time = String(Date.now());
+    this.transmit(data, time);
     return null;
   }
 
@@ -161,7 +162,7 @@ class Pred extends Component<any, State> {
         <Row gutter={[16, 16]}>
           <Col span={18}>
             <Card hoverable style={{ width: "100%" }}>
-              <Figures data={results} />
+              <Figures data={results.slice(Math.max(results.length - 10, 0))} />
             </Card>
           </Col>
           <Col span={6}>
