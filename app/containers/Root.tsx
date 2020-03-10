@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as Redux from 'react-redux';
-import { History } from 'history';
+import { History, Module } from 'history';
 
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
@@ -12,6 +12,13 @@ interface IRootType {
   store: Redux.Store<any>;
   history: History
 };
+
+declare global {
+  interface Window {
+    load: Function;
+    path: any;
+  }
+}
 
 export default function Root({ store, history }: IRootType) {
   return (

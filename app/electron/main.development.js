@@ -5,14 +5,13 @@ const {
   shell,
   ipcMain
 } = require('electron');
-const {
-  predict
-} = require('../api/client');
+
 const path = require('path');
 
 let menu;
 let template;
 let mainWindow = null;
+let pyProc = null;
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -45,33 +44,56 @@ const installExtensions = () => {
   return Promise.resolve([]);
 };
 
+const createPyProc = () => {
+  const script = path.join(__dirname, '../../ids', 'server.py');
+  const { spawn } = require('child_process');
+
+  pyProc = spawn('/Users/yaochenzhen/opt/anaconda3/envs/dl/bin/python', [script]);
+
+  if (pyProc !== null) {
+    console.info('child process success');
+
+    pyProc.stdout.on('data', (data) => {
+      console.log(`stdout: ${data}`);
+    });
+
+    pyProc.stderr.on('data', (data) => {
+      console.error(data);
+    });
+
+    pyProc.on('close', (data) => {
+      console.info(data);
+    })
+  }
+}
+
+const exitPyProc = () => {
+  pyProc.kill();
+  pyProc = null;
+}
+
+app.on('ready', createPyProc);
+app.on('will-quit', exitPyProc);
+
 app.on('ready', () =>
   installExtensions()
   .then(() => {
     mainWindow = new BrowserWindow({
       show: false,
-      width: 1024,
-      height: 728,
+      width: 1290,
+      height: 800,
+      minWidth: 1020,
+      minHeight: 620,
       webPreferences: {
         nodeIntegration: true,
         preload: path.resolve(__dirname, 'preload.js'),
       }
     });
 
-    mainWindow.loadURL(`file://${__dirname}/../public/app.html`);
+    require('./ipc');
 
-    ipcMain.on('predict', (event, arg) => {
-      (async () => {
-        try {
-          const a = await predict();
-          console.info('Main process: predict');
-          console.info(a);
-          event.reply('predict-r', a);
-        } catch (e) {
-          console.error(e);
-        }
-      })();
-    });
+    mainWindow.loadURL(
+      `file://${path.resolve(__dirname, '../public/app.html')}`);
 
     mainWindow.webContents.on('did-finish-load', () => {
       mainWindow.show();
@@ -91,10 +113,10 @@ app.on('ready', () =>
         } = props;
 
         Menu.buildFromTemplate([{
-          label: 'Inspect element',
-          click() {
-            mainWindow.inspectElement(x, y);
-          }
+          // label: 'Inspect element',
+          // click() {
+          //   mainWindow.inspectElement(x, y);
+          // }
         }]).popup(mainWindow);
       });
     }

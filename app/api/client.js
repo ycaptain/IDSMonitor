@@ -5,7 +5,7 @@ const assert = require('assert');
 var transport = thrift.TBufferedTransport;
 var protocol = thrift.TBinaryProtocol;
 
-async function predict(li) {
+async function predict(li, timestamp) {
   // Create a Calculator client with the connection
 
   const connection = thrift.createConnection("localhost", 9090, {
@@ -46,7 +46,7 @@ async function predict(li) {
     });
   }
 
-  const timestamp = String(Date.now());
+  timestamp = timestamp || String(Date.now());
   const data = await predictPromise(li, timestamp);
   return data;
 }
